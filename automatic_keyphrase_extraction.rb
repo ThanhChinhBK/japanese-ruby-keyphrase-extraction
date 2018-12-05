@@ -34,7 +34,7 @@ class KeyphraseExtraction
           end
         
       end
-      @keyphrases = Hash[@keyphrases.sort_by { |k,v| -v }[0..20]]
+      @keyphrases = Hash[@keyphrases.sort_by { |k,v| -v }[0..40]]
   end
   
   def  extract_candidate_words(text)
