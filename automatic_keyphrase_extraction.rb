@@ -14,21 +14,29 @@ class KeyphraseExtraction
       @keywords = @word_net.keys()[0..20]
       @keyphrases = {}
       j = 0
-      @candidate_words.each_with_index do |word, i|
+      @word_list.each_with_index do |word, i|
           if i < j
               next
           end
+          word = @stemmer.stemmer(word)
           if @keywords.include? word
               tmp = []
               tmpsum = 0
-              for k in i..(i+10) do
-                  if @candidate_words[k] == nil
+              c = 0
+              not_stopword = []
+              for k in 0..10 do
+                  l = i + k
+                  if @word_list[l] == nil
                       next
                   end
-                  tmp.push(@candidate_words[k])
+                  w = @stemmer.stemmer(@word_list[l])
+                  tmp.push(@word_list[l])
+                  if @word_net.key?(w)
+                    c += 1
+                    tmpsum += @word_net[@candidate_words[k]]
+                    @keyphrases[tmp.join("")] = tmpsum/ c
+                  end
                   
-                  tmpsum += @word_net[@candidate_words[k]]
-                  @keyphrases[tmp.join(" ")] = tmpsum/ tmp.count
                   j = i + tmp.count
               end
           end
@@ -38,9 +46,9 @@ class KeyphraseExtraction
   end
   
   def  extract_candidate_words(text)
-      word_list = @tokenizer.segment(text)
+      @word_list = @tokenizer.segment(text)
       @candidate_words = []
-      word_list.each do |word|
+      @word_list.each do |word|
           word = word
           if !(@stopword.include? word)
               @candidate_words.push(word)
