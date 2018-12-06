@@ -5,6 +5,7 @@ require_relative "JPStemmer.rb"
 class KeyphraseExtraction
   def initialize()
       @stopword = File.read('stopword.txt').split("\n")
+      @punct = File.read('punct.txt').split("\n")
       @stemmer = JPStemmer.new
       @tokenizer = TinySegmenter.new
   end
@@ -23,17 +24,17 @@ class KeyphraseExtraction
               tmp = []
               tmpsum = 0
               c = 0
-              not_stopword = []
               for k in 0..10 do
                   l = i + k
                   if @word_list[l] == nil
                       next
                   end
+                  break if @punct.include? @word_list[l]
                   w = @stemmer.stemmer(@word_list[l])
                   tmp.push(@word_list[l])
                   if @word_net.key?(w)
                     c += 1
-                    tmpsum += @word_net[@candidate_words[k]]
+                    tmpsum += @word_net[w]
                     @keyphrases[tmp.join("")] = tmpsum/ c
                   end
                   
@@ -73,4 +74,6 @@ class KeyphraseExtraction
 text = File.read('example.txt')
 kpe = KeyphraseExtraction.new()
 a = kpe.extract_keyphrase(text)
-p a
+a.each do |key, value|
+  puts "#{key}:#{value}"
+end

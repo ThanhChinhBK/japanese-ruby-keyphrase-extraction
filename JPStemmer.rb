@@ -351,19 +351,20 @@ class JPStemmer
         rescue
         @word = @word[0...-1]
         ensure
-    end
+        end
       end
     end
   end
   def step8()
     if @wordg[1] == "cause"
       if @wordg[0] == "one"
-begin
+        begin
         @word = (@word[0...-1]) + (@ulist[@wordlist.index(@word[-1])])
         rescue
         @word = @word[0...-1]
         ensure
-    end      else
+        end
+    else
         if @wordg[0] == "two"
           @word += "る"
         end
